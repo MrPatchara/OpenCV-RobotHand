@@ -10,41 +10,58 @@ import serial.tools.list_ports
 class HandTrackingApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Hand Tracking with GUI")
+        self.root.title("Robotic Hand Tracking")
         self.cap = None
         self.detector = HandDetector(maxHands=1, detectionCon=0.7)
         self.serial_port = None
         self.running = False
 
-        # Dark retro theme settings
-        self.bg_color = "#1a1a1a"  # Dark black-gray background color
-        self.fg_color = "#e6e6e6"  # Light gray for text
-        self.button_bg = "#3e4a4f"  # Dark gray-blue
-        self.button_fg = "#f4a300"  # Bright orange for button text
-        self.highlight_color = "#ff6600"  # Retro orange for highlights
+        # Half-Life theme settings
+        self.bg_color = "#1a1a1a"  # Dark gray background
+        self.fg_color = "#ff6600"  # Orange text
+        self.button_bg = "#3e4a4f"  # Dark gray-blue for buttons
+        self.button_fg = "#ff6600"  # Orange for button text
+        self.highlight_color = "#e65c00"  # Bright orange for highlights
+        self.border_color = "#ff6600"  # Border color
         self.root.config(bg=self.bg_color)
 
         self.create_gui()
 
+    # Create GUI elements
     def create_gui(self):
+
+        # add image on title bar
+        self.icon = tk.PhotoImage(file="pic-title.png")
+        self.root.iconphoto(False, self.icon)
+
         # Menu bar with dark retro theme
         menu_bar = tk.Menu(self.root, bg=self.bg_color, fg=self.fg_color)
+        file_menu = tk.Menu(menu_bar, tearoff=0, bg=self.bg_color, fg=self.fg_color)
+        file_menu.add_command(label="Contact Us", command=lambda: messagebox.showinfo("Contact Us", "Mr. Patchara Al-umaree" + "\n" + "Email:Patcharaalumaree@gmail.com" + "\n" + "Phone:+66960614238"))
+        menu_bar.add_cascade(label="Help!", menu=file_menu)
+        
+
         settings_menu = tk.Menu(menu_bar, tearoff=0, bg=self.bg_color, fg=self.fg_color)
         settings_menu.add_command(label="Select COM Port", command=self.select_com_port)
         menu_bar.add_cascade(label="Settings", menu=settings_menu)
         self.root.config(menu=menu_bar)
-
-        # Buttons with dark retro styling
-        self.start_button = ttk.Button(self.root, text="Start Camera", command=self.start_camera, 
-                                       style="RetroButton.TButton")
+        
+        # add developer bar
+        developer_bar = tk.Label(self.root, text="Developed by: Mr. Patchara Al-umaree", bg=self.bg_color, fg=self.fg_color, font=("Press Start 2P", 12))
+        developer_bar.grid(row=2, column=0, columnspan=3, pady
+                            =10)
+        
+        # Buttons
+        self.start_button = tk.Button(self.root, text="Start Camera", command=self.start_camera, font=("OCR A Extended", 12),
+                                       bg=self.button_bg, fg=self.button_fg, activebackground=self.highlight_color, relief="ridge", bd=3)
         self.start_button.grid(row=0, column=0, padx=10, pady=10)
 
-        self.stop_button = ttk.Button(self.root, text="Stop Camera", command=self.stop_camera, state=tk.DISABLED, 
-                                      style="RetroButton.TButton")
+        self.stop_button = tk.Button(self.root, text="Stop Camera", command=self.stop_camera, font=("OCR A Extended", 12),
+                                      bg=self.button_bg, fg=self.button_fg, activebackground=self.highlight_color, relief="ridge", bd=3, state=tk.DISABLED)
         self.stop_button.grid(row=0, column=1, padx=10, pady=10)
 
-        self.exit_button = ttk.Button(self.root, text="Exit", command=self.exit_app, 
-                                      style="RetroButton.TButton")
+        self.exit_button = tk.Button(self.root, text="Exit", command=self.exit_app, font=("OCR A Extended", 12),
+                                      bg=self.button_bg, fg=self.button_fg, activebackground=self.highlight_color, relief="ridge", bd=3)
         self.exit_button.grid(row=0, column=2, padx=10, pady=10)
 
         # Layout adjustment
@@ -61,7 +78,7 @@ class HandTrackingApp:
 
         # Load an image (replace with your own image path)
         self.image = Image.open("your_image_path.png")  # Replace with your image path
-        self.image = self.image.resize((200, 200))  # Resize image as needed
+        self.image = self.image.resize((350, 350))  # Resize image as needed
         self.image_tk = ImageTk.PhotoImage(self.image)
         self.image_label = tk.Label(self.image_frame, image=self.image_tk, bg=self.bg_color)
 
@@ -69,7 +86,7 @@ class HandTrackingApp:
         self.serial_output_frame = tk.Frame(self.main_frame, bg=self.bg_color)
         self.serial_output_frame.grid(row=0, column=2, padx=10, pady=10, sticky="ns")
 
-        self.serial_output_label = tk.Label(self.serial_output_frame, text="Serial Output", font=("Press Start 2P", 14), fg=self.fg_color, bg=self.bg_color)
+        self.serial_output_label = tk.Label(self.serial_output_frame, text="Serial Output to Microcontroller", font=("Press Start 2P", 14), fg=self.fg_color, bg=self.bg_color)
         self.serial_output_label.pack()
 
         self.serial_output_text = tk.Text(self.serial_output_frame, width=30, height=20, state="disabled", fg=self.fg_color, bg="#2d3539", font=("Courier", 12))
@@ -104,7 +121,8 @@ class HandTrackingApp:
         if available_ports:
             com_port_combo.current(0)
 
-        save_button = ttk.Button(settings_window, text="Save", command=save_com_port, style="RetroButton.TButton")
+        save_button = tk.Button(settings_window, text="Save", command=save_com_port, font=("OCR A Extended", 10),
+                                bg=self.button_bg, fg=self.button_fg, relief="ridge", bd=3, activebackground=self.highlight_color)
         save_button.pack(pady=10)
 
     def start_camera(self):

@@ -26,14 +26,26 @@ class HandTrackingApp:
 
         self.create_gui()
 
+    # Create GUI elements
     def create_gui(self):
         # Menu bar with dark retro theme
         menu_bar = tk.Menu(self.root, bg=self.bg_color, fg=self.fg_color)
+
+        file_menu = tk.Menu(menu_bar, tearoff=0, bg=self.bg_color, fg=self.fg_color)
+        file_menu.add_command(label="Contact Us", command=lambda: messagebox.showinfo("Contact Us", "Email:" + "\n" + "Phone:"))
+        menu_bar.add_cascade(label="Help!", menu=file_menu)
+        
+
         settings_menu = tk.Menu(menu_bar, tearoff=0, bg=self.bg_color, fg=self.fg_color)
         settings_menu.add_command(label="Select COM Port", command=self.select_com_port)
         menu_bar.add_cascade(label="Settings", menu=settings_menu)
         self.root.config(menu=menu_bar)
-
+        
+        # add developer bar
+        developer_bar = tk.Label(self.root, text="Developed by: Your Name", bg=self.bg_color, fg=self.fg_color, font=("Press Start 2P", 12))
+        developer_bar.grid(row=2, column=0, columnspan=3, pady
+                            =10)
+        
         # Buttons with dark retro styling
         self.start_button = ttk.Button(self.root, text="Start Camera", command=self.start_camera, 
                                        style="RetroButton.TButton")
@@ -61,7 +73,7 @@ class HandTrackingApp:
 
         # Load an image (replace with your own image path)
         self.image = Image.open("your_image_path.png")  # Replace with your image path
-        self.image = self.image.resize((200, 200))  # Resize image as needed
+        self.image = self.image.resize((350, 350))  # Resize image as needed
         self.image_tk = ImageTk.PhotoImage(self.image)
         self.image_label = tk.Label(self.image_frame, image=self.image_tk, bg=self.bg_color)
 
